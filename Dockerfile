@@ -82,15 +82,15 @@ RUN mkdir -p models/checkpoints \
     models/upscale_models \
     models/loras
 
-# Download models with single-line progress bars
+# Download models with minimal logging
 RUN set -e && \
     echo "Starting model downloads..." && \
     for URL in \
+        "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors models/unet/flux1-dev.safetensors auth" \
         "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors models/clip/clip_l.safetensors noauth" \
-        "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors models/clip/t5xxl_fp16.safetensors noauth" \
+        "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp8_e4m3fn.safetensors models/clip/t5xxl_fp8_e4m3fn.safetensors noauth" \
         "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors models/vae/ae.safetensors auth" \
         "https://huggingface.co/BeichenZhang/LongCLIP-L/resolve/main/longclip-L.pt models/clip/longclip-L.pt noauth" \
-        "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors models/unet/flux1-dev.safetensors auth" \
         "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth models/upscale_models/RealESRGAN_x2.pth noauth" \
         "https://huggingface.co/nerijs/dark-fantasy-illustration-flux/resolve/main/darkfantasy_illustration_v2.safetensors models/loras/darkfantasy_illustration_v2.safetensors noauth" \
         "https://huggingface.co/XLabs-AI/flux-RealismLora/resolve/main/lora.safetensors models/loras/flux-RealismLora.safetensors noauth" \
@@ -99,13 +99,13 @@ RUN set -e && \
         SRC=$(echo $URL | cut -d' ' -f1); \
         DEST=$(echo $URL | cut -d' ' -f2); \
         AUTH=$(echo $URL | cut -d' ' -f3); \
-        echo "Starting download of $(basename $DEST)..."; \
+        echo "Downloading $(basename $DEST)"; \
         if [ "$AUTH" = "auth" ]; then \
-            wget --progress=bar:force:noscroll --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC" || exit 1; \
+            wget -q --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC" || exit 1; \
         else \
-            wget --progress=bar:force:noscroll -O "$DEST" "$SRC" || exit 1; \
+            wget -q -O "$DEST" "$SRC" || exit 1; \
         fi; \
-        echo "Completed download of $(basename $DEST)"; \
+        echo "Completed $(basename $DEST)"; \
     done
 
 # Stage 3: Final image
