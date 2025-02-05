@@ -88,7 +88,7 @@ RUN set -e && \
     for URL in \
         "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors models/unet/flux1-dev.safetensors auth" \
         "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors models/clip/clip_l.safetensors noauth" \
-        "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp8_e4m3fn.safetensors models/clip/t5xxl_fp8_e4m3fn.safetensors noauth" \
+        "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors models/clip/t5xxl_fp16.safetensors noauth" \
         "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors models/vae/ae.safetensors auth" \
         "https://huggingface.co/BeichenZhang/LongCLIP-L/resolve/main/longclip-L.pt models/clip/longclip-L.pt noauth" \
         "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth models/upscale_models/RealESRGAN_x2.pth noauth" \
