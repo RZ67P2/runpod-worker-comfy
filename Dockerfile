@@ -57,8 +57,9 @@ CMD ["/start.sh"]
 # Stage 2: Download models
 FROM base as downloader
 
-# Define as ENV instead of ARG
-ENV HUGGINGFACE_ACCESS_TOKEN=${HUGGINGFACE_ACCESS_TOKEN}
+# Define both ARG and ENV
+ARG HUGGINGFACE_ACCESS_TOKEN
+ENV HUGGINGFACE_TOKEN=${HUGGINGFACE_ACCESS_TOKEN}
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -71,12 +72,12 @@ RUN mkdir -p models/checkpoints \
     models/upscale_models \
     models/loras
 
-# Add debug echo to verify token is present
-RUN echo "Token prefix: ${HUGGINGFACE_ACCESS_TOKEN:0:4}..." && \
-    wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/unet/flux1-dev.safetensors https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors && \
+# Download models with simpler debug echo
+RUN echo "Token exists: $HUGGINGFACE_TOKEN" && \
+    wget --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O models/unet/flux1-dev.safetensors https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors && \
     wget -O models/clip/clip_l.safetensors https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors && \
     wget -O models/clip/t5xxl_fp8_e4m3fn.safetensors https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp8_e4m3fn.safetensors && \
-    wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/vae/ae.safetensors https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors && \
+    wget --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O models/vae/ae.safetensors https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors && \
     wget -O models/clip/longclip-L.pt https://huggingface.co/BeichenZhang/LongCLIP-L/resolve/main/longclip-L.pt && \
     wget -O models/upscale_models/RealESRGAN_x2.pth https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth && \
     wget -O models/loras/darkfantasy_illustration_v2.safetensors https://huggingface.co/nerijs/dark-fantasy-illustration-flux/resolve/main/darkfantasy_illustration_v2.safetensors && \
