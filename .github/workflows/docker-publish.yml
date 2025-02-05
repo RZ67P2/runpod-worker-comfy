@@ -9,6 +9,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  DOCKER_BUILDKIT: 1
+  BUILDKIT_PROGRESS: plain
 
 jobs:
   build:
@@ -21,6 +23,16 @@ jobs:
       HUGGINGFACE_ACCESS_TOKEN: ${{ secrets.HUGGINGFACE_ACCESS_TOKEN }}
 
     steps:
+      - name: Free disk space
+        run: |
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          df -h
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -35,6 +47,11 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          buildkitd-flags: --debug
+          driver-opts: |
+            image=moby/buildkit:latest
+            network=host
 
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -50,4 +67,11 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}:latest
           build-args: |
-            HUGGINGFACE_ACCESS_TOKEN=${{secrets.HUGGINGFACE_ACCESS_TOKEN}}
+            HUGGINGFACE_ACCESS_TOKEN=${{ secrets.HUGGINGFACE_ACCESS_TOKEN }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          outputs: type=registry,compression=zstd
+          # Add BuildKit options for better space management
+          build-contexts: |
+            app=.
+          provenance: false
