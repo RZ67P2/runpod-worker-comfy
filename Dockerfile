@@ -57,9 +57,14 @@ CMD ["/start.sh"]
 # Stage 2: Download models
 FROM base as downloader
 
-# Define both ARG and ENV
-ARG HUGGINGFACE_ACCESS_TOKEN
-ENV HUGGINGFACE_TOKEN=${HUGGINGFACE_ACCESS_TOKEN}
+# Define ARG and ENV with a default empty value
+ARG HUGGINGFACE_ACCESS_TOKEN=""
+ENV HUGGINGFACE_TOKEN=$HUGGINGFACE_ACCESS_TOKEN
+
+# Add a check for the token
+RUN if [ -z "$HUGGINGFACE_TOKEN" ]; then \
+    echo "Error: HUGGINGFACE_ACCESS_TOKEN is not set" && exit 1; \
+    fi
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
