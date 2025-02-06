@@ -1,8 +1,0 @@
-#!/bin/bash
-echo "Build hook running..."
-echo "HUGGINGFACE_ACCESS_TOKEN is set: $([[ ! -z "${HUGGINGFACE_ACCESS_TOKEN}" ]] && echo 'true' || echo 'false')"
-
-docker build \
-  --build-arg HUGGINGFACE_ACCESS_TOKEN="${HUGGINGFACE_ACCESS_TOKEN}" \
-  -f "$DOCKERFILE_PATH" \
-  -t "$IMAGE_NAME" .
