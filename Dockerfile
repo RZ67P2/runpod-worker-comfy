@@ -82,7 +82,7 @@ RUN mkdir -p models/checkpoints \
     models/upscale_models \
     models/loras
 
-# Download models with minimal logging but show errors
+# Download models with ultra-minimal logging
 RUN set -e && \
     echo "Starting model downloads..." && \
     for URL in \
@@ -101,10 +101,10 @@ RUN set -e && \
         AUTH=$(echo $URL | cut -d' ' -f3); \
         echo "Starting download of $(basename $DEST)"; \
         if [ "$AUTH" = "auth" ]; then \
-            wget --no-verbose --show-progress --progress=dot:giga --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC" || exit 1; \
+            wget --no-verbose --progress=dot -e dotbytes=100M --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC" 2>&1 | grep -v "^\."; \
         else \
-            wget --no-verbose --show-progress --progress=dot:giga -O "$DEST" "$SRC" || exit 1; \
-        fi; \
+            wget --no-verbose --progress=dot -e dotbytes=100M -O "$DEST" "$SRC" 2>&1 | grep -v "^\."; \
+        fi && \
         echo "Completed download of $(basename $DEST)"; \
     done
 
