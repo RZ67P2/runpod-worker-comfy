@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     git \
     wget \
+    pv \
     libgl1 \
     && ln -sf /usr/bin/python3.10 /usr/bin/python \
     && ln -sf /usr/bin/pip3 /usr/bin/pip
@@ -101,9 +102,9 @@ RUN set -e && \
         AUTH=$(echo $URL | cut -d' ' -f3); \
         echo "Starting download of $(basename $DEST)"; \
         if [ "$AUTH" = "auth" ]; then \
-            wget --no-verbose --show-progress --progress=bar:force:noscroll --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC"; \
+            wget -q --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O - "$SRC" | pv -N "$(basename $DEST)" -b -i 30 > "$DEST"; \
         else \
-            wget --no-verbose --show-progress --progress=bar:force:noscroll -O "$DEST" "$SRC"; \
+            wget -q -O - "$SRC" | pv -N "$(basename $DEST)" -b -i 30 > "$DEST"; \
         fi && \
         echo "Completed download of $(basename $DEST)"; \
     done
