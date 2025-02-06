@@ -1,8 +1,16 @@
 {
     "comfyui": "9e1d301129db2507e6681a83d845186802e4ba22",
     "git_custom_nodes": {
+        "https://github.com/city96/ComfyUI-GGUF": {
+            "hash": "5875c52f59baca3a9372d68c43a3775e21846fe0",
+            "disabled": false
+        },
         "https://github.com/SeaArtLab/ComfyUI-Long-CLIP.git": {
             "hash": "889e552b12809101784dd764268456d36e00bcff",
+            "disabled": false
+        },
+        "https://github.com/kijai/ComfyUI-KJNodes.git": {
+            "hash": "188793f2ba0450ce63baa8b9201eea8e876a9c89",
             "disabled": false
         },
         "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git": {
@@ -11,6 +19,10 @@
         },
         "https://github.com/ssitu/ComfyUI_UltimateSDUpscale": {
             "hash": "ff3fdfeee03de46d4462211cffd165d27155e858",
+            "disabled": false
+        },
+        "https://github.com/yolain/ComfyUI-Easy-Use": {
+            "hash": "2b160cc789c5f721797b5e32308063309b0f3ecb",
             "disabled": false
         },
         "https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git": {
@@ -27,6 +39,7 @@
         }
     },
     "cnr_custom_nodes": {
+        "comfyui_controlnet_aux": "1.0.5",
         "comfyui_essentials": "1.1.0"
     },
     "file_custom_nodes": [
