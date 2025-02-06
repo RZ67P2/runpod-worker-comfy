@@ -101,9 +101,9 @@ RUN set -e && \
         AUTH=$(echo $URL | cut -d' ' -f3); \
         echo "Starting download of $(basename $DEST)"; \
         if [ "$AUTH" = "auth" ]; then \
-            wget --no-verbose --progress=dot -e dotbytes=100M --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC" 2>&1 | grep -v "^\."; \
+            wget --progress=bar:force:noscroll --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC" 2>&1 | grep --line-buffered -v "^[[:space:]]*[0-9]*K"; \
         else \
-            wget --no-verbose --progress=dot -e dotbytes=100M -O "$DEST" "$SRC" 2>&1 | grep -v "^\."; \
+            wget --progress=bar:force:noscroll -O "$DEST" "$SRC" 2>&1 | grep --line-buffered -v "^[[:space:]]*[0-9]*K"; \
         fi && \
         echo "Completed download of $(basename $DEST)"; \
     done
