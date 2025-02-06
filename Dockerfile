@@ -102,9 +102,9 @@ RUN set -e && \
         AUTH=$(echo $URL | cut -d' ' -f3); \
         echo "Starting download of $(basename $DEST)"; \
         if [ "$AUTH" = "auth" ]; then \
-            wget --no-verbose --progress=dot:giga --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC"; \
+            wget --no-verbose --show-progress --progress=dot:giga --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC"; \
         else \
-            wget --no-verbose --progress=dot:giga -O "$DEST" "$SRC"; \
+            wget --no-verbose --show-progress --progress=dot:giga -O "$DEST" "$SRC"; \
         fi && \
         echo "Completed download of $(basename $DEST)"; \
     done
