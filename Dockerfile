@@ -83,7 +83,7 @@ RUN mkdir -p models/checkpoints \
     models/upscale_models \
     models/loras
 
-# Download models with minimal logging (1 dot per GB)
+# Download models with cleanup between files
 RUN set -e && \
     echo "Starting model downloads..." && \
     for URL in \
@@ -101,12 +101,18 @@ RUN set -e && \
         DEST=$(echo $URL | cut -d' ' -f2); \
         AUTH=$(echo $URL | cut -d' ' -f3); \
         echo "Starting download of $(basename $DEST)"; \
+        echo "Available space before download:"; \
+        df -h /; \
         if [ "$AUTH" = "auth" ]; then \
-            wget --no-verbose --show-progress --progress=dot:giga --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC"; \
+            wget --no-verbose --progress=dot:giga --header="Authorization: Bearer ${HUGGINGFACE_TOKEN}" -O "$DEST" "$SRC"; \
         else \
-            wget --no-verbose --show-progress --progress=dot:giga -O "$DEST" "$SRC"; \
+            wget --no-verbose --progress=dot:giga -O "$DEST" "$SRC"; \
         fi && \
-        echo "Completed download of $(basename $DEST)"; \
+        echo "Completed download of $(basename $DEST)" && \
+        echo "Cleaning up..." && \
+        docker system prune -af && \
+        echo "Available space after cleanup:" && \
+        df -h /; \
     done
 
 # Stage 3: Final image
