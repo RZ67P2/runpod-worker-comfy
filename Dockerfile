@@ -55,3 +55,5 @@ RUN /restore_snapshot.sh
 
 # Single CMD at the end
 CMD ["/start.sh"]
+
+#--platform linux/amd64
